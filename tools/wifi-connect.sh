@@ -25,14 +25,18 @@ function usage ()
     Options:
     -h|help       Display this message
     -v|version    Display script version
-    -s|ssid	  SSID of the network to connect to 
+    -s        	  SSID of the network to connect to 
+    -l|list       List saved configuration files
     -q|quiet   	  Quiet mode, less verbose"
 
 }    # ----------  end of function usage  ----------
 
-#-----------------------------------------------------------------------
-#  Handle command line arguments
-#-----------------------------------------------------------------------
+list_configuration_files() {
+  for file in /etc/wpa_supplicant/*.conf; do
+    echo $file
+  done
+}
+
 function connect() {
 	vprint "Trying to connect"
 	if test -n "$1"; then	
@@ -73,7 +77,10 @@ function check_wifi() {
 }
 
 
-while getopts ":hvqs:" opt
+#-----------------------------------------------------------------------
+#  Handle command line arguments
+#-----------------------------------------------------------------------
+while getopts ":hvqs:l" opt
 do
   case $opt in
 
@@ -82,6 +89,8 @@ do
 	v|version  )  echo "$0 -- Version $__ScriptVersion"; exit 0   ;;
 
 	q|quiet  )  VERBOSE=""   ;;
+
+	l|list  )  list_configuration_files  ;;
 
 	s|ssid  )  
 		echo $OPTARG
