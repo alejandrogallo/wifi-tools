@@ -35,7 +35,7 @@ function usage ()
 #-----------------------------------------------------------------------
 function connect() {
 	vprint "Trying to connect"
-	if test -n $1; then	
+	if test -n "$1"; then	
 		check_ssid $1
 	else
 		check_wifi		
@@ -44,24 +44,29 @@ function connect() {
 }
 
 function connect_wpa() {
-	if test -n $CONF_FILE; then
+	if test -n "$CONF_FILE"; then
 		sudo wpa_supplicant -B -i $INTERFACE -D wext -c $CONF_FILE
-		dhclient $INTERFACE
+		sudo dhclient $INTERFACE
+	else
+		echo "Configuration file not found"
+		exit 1
 	fi
 	
 }
 
 function check_ssid() {
+	vprint "Checking the config file for network $1 is already in the system"
 	ssid=$1
 	for my_ssid in /etc/wpa_supplicant/*.conf; do 
 		if [[ "$ssid.conf" = "$(basename $my_ssid)" ]]; then
-			echo "Detected a saved configuration file for network $ssid"
+			vprint "Detected a saved configuration file for network $ssid"
 			CONF_FILE=$my_ssid
 		fi
 	done
 }
 
 function check_wifi() {
+	vprint "Checking if a config file for current networks exists"
 	for ssid in $( sudo iwlist scan | grep ESSID | sed -e "s/ESSID://" -e "s/\"//g" | cat); do 
 		check_ssid $ssid
 	done
@@ -80,7 +85,7 @@ do
 
 	s|ssid  )  
 		echo $OPTARG
-		#connect $OPTARG	
+		connect $OPTARG	
 	;;
 
 	\? )  echo -e "\n  Option does not exist : $OPTARG\n"; usage; exit 1   ;;
