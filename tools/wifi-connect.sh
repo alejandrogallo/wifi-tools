@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-__ScriptVersion="0.0.1"
+__ScriptVersion="0.0.2"
 
 #===  FUNCTION  ================================================================
 #         NAME:  usage
@@ -55,7 +55,6 @@ function connect_wpa() {
 		echo "Configuration file not found"
 		exit 1
 	fi
-	
 }
 
 function check_ssid() {
@@ -77,9 +76,10 @@ function check_wifi() {
 }
 
 
-#-----------------------------------------------------------------------
-#  Handle command line arguments
-#-----------------------------------------------------------------------
+#######################################################################
+#                    HANDLE COMMAND LINE ARGUMENTS                    #
+#######################################################################
+
 while getopts ":hvqs:l" opt
 do
   case $opt in
